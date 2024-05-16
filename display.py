@@ -1,6 +1,7 @@
 import pygame
 import sys
 import random
+import time
 import subprocess
 
 # Inicializar pygame
@@ -16,6 +17,10 @@ PINK = (255, 192, 203)
 LIGHT_PINK = (255, 182, 193)
 BLACK = (0, 0, 0)
 LIGHT_GRAY = (200, 200, 200)
+
+# Crear la pantalla
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Pantalla de Inicio")
 
 # Función para dibujar texto en la pantalla con efecto de brillo
 def draw_text(text, font, color, surface, x, y):
@@ -51,7 +56,7 @@ def draw_button(text, font, color, surface, x, y, width, height, hover=False):
 
     surface.blit(button_surface, (x, y))
 
-# Función para la animación de transición
+# Función de transición animada de bits
 def transition_animation(surface):
     max_bits = 10000
     for _ in range(max_bits):
@@ -61,25 +66,26 @@ def transition_animation(surface):
         pygame.draw.circle(surface, color, (x, y), 2)
         pygame.display.update()
 
-# Función principal del juego
-def run_game(screen):
+# Función principal
+def main():
     # Cargar la imagen de fondo
-    background_image = pygame.image.load(r'C:\Users\hugo.aguilar\Documents\Oportun_TM\star.PNG').convert()
+    background_image = pygame.image.load(r'C:\Users\hugo.aguilar\Documents\Oportun_TM\select.PNG').convert()
     background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+
+    # Fuentes
+    title_font = pygame.font.Font(None, 80)
+    button_font = pygame.font.Font(None, 50)
 
     # Loop principal
     while True:
         # Dibujar elementos en la pantalla de inicio
         screen.blit(background_image, (0, 0))  # Dibujar fondo
-
+        #draw_text("¡Bienvenido al Juego!", title_font, (255, 255, 255), screen, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4)
+        
         # Detectar la posición del mouse
         mouse_pos = pygame.mouse.get_pos()
 
-        # Dibujar botones con efecto de sombra al colocar el mouse sobre ellos
-        draw_button("Jugar", button_font, WHITE, screen, SCREEN_WIDTH / 2 - 100, 380, 200, 50, hover=(200 <= mouse_pos[0] <= 600 and 380 <= mouse_pos[1] <= 430))
-        draw_button("Opciones", button_font, WHITE, screen, SCREEN_WIDTH / 2 - 100, 450, 200, 50, hover=(200 <= mouse_pos[0] <= 600 and 450 <= mouse_pos[1] <= 500))
-        draw_button("Salir", button_font, WHITE, screen, SCREEN_WIDTH / 2 - 100, 520, 200, 50, hover=(200 <= mouse_pos[0] <= 600 and 520 <= mouse_pos[1] <= 570))
-
+      
         # Actualizar la pantalla
         pygame.display.update()
 
@@ -89,35 +95,24 @@ def run_game(screen):
                 pygame.quit()
                 sys.exit()
 
+   
+
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if 200 <= mouse_pos[0] <= 600 and 380 <= mouse_pos[1] <= 430:
-                    return "play"  # Si se presiona "Jugar"
+                    transition_animation(screen)  # Ejecutar animación de transición
+                    pygame.display.update()
+                    # Abrir el archivo .py
+                    subprocess.Popen(["python", "display.py"])
+                    pygame.quit()  # Cerrar el juego actual
+                    sys.exit()
                 elif 200 <= mouse_pos[0] <= 600 and 450 <= mouse_pos[1] <= 500:
                     print("¡Haz clic en el botón de Opciones!")
                 elif 200 <= mouse_pos[0] <= 600 and 520 <= mouse_pos[1] <= 570:
                     pygame.quit()
                     sys.exit()
 
-# Función para ejecutar el código como una cabecera
-def run_header():
-    # Crear la pantalla
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    pygame.display.set_caption("Pantalla de Inicio")
 
-    # Fuentes
-    title_font = pygame.font.Font(None, 80)
-    global button_font
-    button_font = pygame.font.Font(None, 50)
-
-    while True:
-        action = run_game(screen)
-        if action == "play":
-            transition_animation(screen)  # Ejecutar animación de transición
-            pygame.display.update()
-            # Ejecutar display.py
-            subprocess.run(["python", "display.py"])
-            pygame.quit()  # Cerrar el juego actual
-            sys.exit()
 
 if __name__ == "__main__":
-    run_header()
+    main()
